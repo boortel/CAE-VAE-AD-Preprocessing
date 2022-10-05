@@ -1,22 +1,23 @@
-import argparse
-from collections import namedtuple
 import sys
-
+import argparse
 import numpy as np
+import matplotlib.pyplot as plt
+
 from sklearn import svm
-from sklearn.metrics import precision_recall_curve, auc, roc_auc_score
+from collections import namedtuple
+from sklearn.metrics import precision_recall_curve, auc, roc_auc_score, plot_confusion_matrix, roc_curve
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Anomaly Detection by One Class SVM')
 
-    parser.add_argument('--data_path', default='./data/cifar10_cae.npz', type=str, help='path to dataset')
-    parser.add_argument('--normal_label', default=8, type=int,
+    parser.add_argument('--data_path', default='./data/test_data/bae1_enc_test.npz', type=str, help='path to dataset')
+    parser.add_argument('--normal_label', default=0, type=int,
                         help='label defined as normal. Other classes are treated as abnormal')
-    parser.add_argument('--rate_normal_train', default=0.82, type=float, help='rate of normal data to use in training')
-    parser.add_argument('--rate_anomaly_test', default=0.1, type=float,
+    parser.add_argument('--rate_normal_train', default=0.5, type=float, help='rate of normal data to use in training')
+    parser.add_argument('--rate_anomaly_test', default=0.5, type=float,
                         help='rate of abnormal data versus normal data in test data. The default setting is 10:1(=0.1)')
-    parser.add_argument('--test_rep_count', default=10, type=int,
+    parser.add_argument('--test_rep_count', default=5, type=int,
                         help='counts of test repeats per one trained model. For a model, test data selection and evaluation are repeated.')
     parser.add_argument('--TRAIN_RAND_SEED', default=42, type=int, help='random seed used selecting training data')
     parser.add_argument('--TEST_RAND_SEED', default=[42, 89, 2, 156, 491, 32, 67, 341, 100, 279], type=list,
@@ -135,12 +136,13 @@ def main():
     roc_scores = []
 
     # nu : the upper limit ratio of anomaly data(0<=nu<=1)
-    nus = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    nus = [0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    # nus = [0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.15]
 
     # train model and evaluate with changing parameter nu
     for nu in nus:
         # train with nu
-        clf = svm.OneClassSVM(nu=nu, kernel='rbf', gamma='auto')
+        clf = svm.OneClassSVM(nu=nu, kernel='rbf', gamma='auto', verbose=True)
         clf.fit(split_data.train_x)
 
         total_pr = 0
@@ -179,6 +181,37 @@ def main():
     print('ROC_AUC MAX : ', max(roc_scores))
     print('ROC_MAX_NU : ', nus[int(np.argmax(roc_scores))])
 
+    roc_auc, prc_auc = calc_metrics(testy, scores)
+    print("roc_auc: {:.2f}%, prc_auc: {:.2f}%".format(roc_auc*100,prc_auc*100))
+    fpr,tpr, thresholds = roc_curve(testy, scores)
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax.plot(fpr,tpr)
+    ax.set_title("ROC curve for experiment")
+    ax.set_xlabel("False positive rate")
+    ax.set_ylabel("True positive rate")
+
+    # Plot non-normalized and normalized   confusion matrix
+    titles_options = [("Confusion matrix, without normalization", None),
+                      ("Normalized confusion matrix", 'true')]
+    
+    class_names = ['OK', 'NOK']
+    # classifier = svm.OneClassSVM(nu = nus[int(np.argmax(roc_scores))], kernel = 'rbf', gamma = 'auto')
+    classifier = svm.OneClassSVM(nu = 0.4, kernel = 'rbf', gamma = 'auto')
+    classifier.fit(split_data.train_x)
+    setattr(classifier, "_estimator_type", "classifier")
+    #classifier.predict()
+    
+    for title, normalize in titles_options:
+        disp = plot_confusion_matrix(clf, testx, testy*2-1,
+                                      display_labels=class_names,
+                                      cmap=plt.cm.Blues,
+                                      normalize=normalize)
+        disp.ax_.set_title(title)
+    
+        print(title)
+        print(disp.confusion_matrix)
+    
+    plt.show()
 
 if __name__ == '__main__':
     main()

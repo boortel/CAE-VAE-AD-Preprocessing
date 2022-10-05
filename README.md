@@ -1,30 +1,33 @@
-# Unsupervised Anomaly Detection with One-Class Support Vector Machine
+# Feature space reduction as data preprocessing for the anomaly detection
 
-This repository includes codes for unsupervised anomaly detection by means of One-Class SVM(Support Vector Machine). In the codes, CIFAR10 is expected to be used.
-Firstly, the image data are compressed by convolutional autoencoder(CAE) to vector features. Secondly, training a model only with the features of the data which you define as normal will be done. At the last, you can run anomaly detection with One-Class SVM and you can evaluate the models by AUCs of ROC and PR.
+This repository implements the data preprocessing methods for the anomaly detection described in the paper *Feature space reduction as data preprocessing for the anomaly detection* and it is partialy based on the *Unsupervised Anomaly detection with One/Class Support Vector Machine* repository.
 
 #### Dependencies
-scikit-learn, Keras, Numpy, OpenCV
-
-My test environment: Python3.6, scikit-learn==.21.2, Keras==2.2.4
-, numpy==1.16.4, opencv-python==4.1.0.25
+**TODO**
 
 ## How to use
 ### 1. Prepare data
-Prepare data and labels to use. For instance, CIFAR10 is composed of 10 classes and each label should express unique class and be integer. These prepared data should be placed in the data directory.
+Prepare data and labels to use. For instance, CIFAR10 is composed of 10 classes and each label should express unique class and be integer. Industrial cookie consists of four classes (one OK and three anomalous), but for the anomaly detection task only OK and common NOK classes are considered. These prepared data should be placed in the data directory.
 
 You can download CIFAR10 data via :  
 https://www.kaggle.com/janzenliu/cifar-10-batches-py
 
+Industrial cookie dataset (more suitable for the anomaly detection) is available at:
+https://www.kaggle.com/datasets/imonbilk/industry-biscuit-cookie-dataset
+
 Put them in "data" directory and run the following code to compress them into NPZ file.
 ```
-python make_cifar10_npz.py
+python makeCifar10Npz.py
+
+or
+
+python makeCustomNpz.py
 ```
-After running this code, you can get cifar10.npz under "data" directory.
+After running this code, you can get *npz* data under "data" directory.
 
 
 #### (Optional)
-When you use your own dataset, please prepare npz file as the same format as CIFAR-10.
+When you use your own dataset, please prepare npz file as the same format as CIFAR-10. Customize the *makeCustomNpz.py* script if necessary.
 ```
 data = np.load('your_data.npz')
 data.files
@@ -39,22 +42,48 @@ You might need to change network architecture's parameter so that it can deal wi
 
 
 ### 2. Train CAE
-Run the following command. Settable parameters like epoch, batchsize or output directory are described in the script.
+Three CAE models (BAE1, BAE2 and MVTec) are defined in the module *models.py*. Train and save the desired model by running the script
 ```
-python cae.py
+python AE_train.py
 ```
-The encoded features by CAE will be saved in the "data" directory as cifar10_cae.npz.
+Model is going to be saved in the *.pb* file format in the folder *data*.
 
-### 3. Run Anomaly Detection
-First, normal class needs to be defined by "normal_label". It means the other classes EXCEPT the normal class will be automatically defined as abnormal.
-By running the script below, OC-SVM is trained with the normal data. As evaluation metrics, AUCs of ROC(Receiver Operating Characteristic) and PR(Precision and Recall) are calculated.
 
-By default, training models and test procedure are repeated over different nu parameters(see scikit-learn document. gamma and kernel are fixed in the script). For each nu and its trained model, the AUCs are averaged over 10 different test data set.
+### 3. Evaluate CAE
+Evaluate the trained models using the saved *.pb* data by running the script
+```
+python AE_evaluate.py
+```
+to obtain encoded and decoded images of all three defined models in the corresponding *data* subfolders.
+
+
+### 4. Obtain reconstruction error metrics
+Get the reconstruction error metrics by running the script
+```
+python AD_ErrorMetrics.py
+```
+
+### 5. Run Anomaly Detection
+**TODO**
+
+#### References
+
+Please cite following paper in your further work:
 
 ```
-python anomaly_detection_ocsvm.py
+@inproceedings{BUT171163,
+  author="Šimon {Bilík}",
+  title="Feature space reduction as data preprocessing for the anomaly detection",
+  annote="In this paper, we present two pipelines in order to reduce the feature space for anomaly detection using the One Class SVM. As a first stage of both pipelines, we compare the performance of three convolutional autoencoders. We use the PCA method together with t-SNE as the first pipeline and the reconstruction errors based method as the second. Both methods have potential for the anomaly detection, but the reconstruction error metrics prove to be more robust for this task. We show that the convolutional autoencoder architecture doesn't have a significant effect for this task and we prove the potential of our approach on the real world dataset.",
+  address="Vysoké učené Technické, Fakulta elektrotechniky a komunikačních technologií",
+  booktitle="Proceedings I of the 27th Conference STUDENT EEICT 2021",
+  chapter="171163",
+  howpublished="online",
+  institution="Vysoké učené Technické, Fakulta elektrotechniky a komunikačních technologií",
+  year="2021",
+  month="april",
+  pages="415--419",
+  publisher="Vysoké učené Technické, Fakulta elektrotechniky a komunikačních technologií",
+  type="conference paper"
+}
 ```
-Please look into the script for the settable parameters.
-
-scikit-learn(sklearn.svm.OneClassSVM)  
-http://scikit-learn.org/stable/modules/generated/sklearn.svm.OneClassSVM.html
