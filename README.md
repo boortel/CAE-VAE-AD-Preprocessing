@@ -3,7 +3,11 @@
 This repository implements the data preprocessing methods for the anomaly detection described in the paper *Feature space reduction as data preprocessing for the anomaly detection* and it is partialy based on the *Unsupervised Anomaly detection with One/Class Support Vector Machine* repository.
 
 #### Dependencies
-**TODO**
+Install the TensorFlow 2 via pip: https://www.tensorflow.org/install
+Install the remaining requirements using:
+```
+pip install -r requirements.txt
+```
 
 ## How to use
 ### 1. Prepare data
@@ -66,7 +70,7 @@ python AD_ErrorMetrics.py
 ### 5. Run Anomaly Detection
 **TODO**
 
-#### References
+## References
 
 Please cite following paper in your further work:
 
