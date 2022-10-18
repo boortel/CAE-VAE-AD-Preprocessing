@@ -79,16 +79,15 @@ Please cite following paper in your further work:
 @inproceedings{BUT171163,
   author="Šimon {Bilík}",
   title="Feature space reduction as data preprocessing for the anomaly detection",
-  annote="In this paper, we present two pipelines in order to reduce the feature space for anomaly detection using the One Class SVM. As a first stage of both pipelines, we compare the performance of three convolutional autoencoders. We use the PCA method together with t-SNE as the first pipeline and the reconstruction errors based method as the second. Both methods have potential for the anomaly detection, but the reconstruction error metrics prove to be more robust for this task. We show that the convolutional autoencoder architecture doesn't have a significant effect for this task and we prove the potential of our approach on the real world dataset.",
-  address="Vysoké učené Technické, Fakulta elektrotechniky a komunikačních technologií",
+  address="Brno University of Technology, Faculty of Electrical Engineering",
   booktitle="Proceedings I of the 27th Conference STUDENT EEICT 2021",
   chapter="171163",
   howpublished="online",
-  institution="Vysoké učené Technické, Fakulta elektrotechniky a komunikačních technologií",
+  institution="Brno University of Technology, Faculty of Electrical Engineering",
   year="2021",
   month="april",
   pages="415--419",
-  publisher="Vysoké učené Technické, Fakulta elektrotechniky a komunikačních technologií",
+  publisher="Brno University of Technology, Faculty of Electrical Engineering",
   type="conference paper"
 }
 ```
