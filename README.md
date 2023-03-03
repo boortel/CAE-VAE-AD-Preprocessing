@@ -1,3 +1,5 @@
+**Warning:** This repository is outdated and it won't be maintained in future. Please refer to the repository https://github.com/boortel/AE-Reconstruction-And-Feature-Based-AD and to the ModelClassificationErrM.py module for its enhanced reimplemantation.
+
 # Feature space reduction as data preprocessing for the anomaly detection
 
 This repository implements the data preprocessing methods for the anomaly detection described in the paper *Feature space reduction as data preprocessing for the anomaly detection* and it is partialy based on the *Unsupervised Anomaly detection with One/Class Support Vector Machine* repository.
