@@ -2,7 +2,7 @@
 
 # Feature space reduction as data preprocessing for the anomaly detection
 
-This repository implements the data preprocessing methods for the anomaly detection described in the paper *Feature space reduction as data preprocessing for the anomaly detection* and it is partialy based on the *Unsupervised Anomaly detection with One/Class Support Vector Machine* repository.
+This repository implements the data preprocessing methods for the anomaly detection described in the paper [Feature space reduction as data preprocessing for the anomaly detection](https://arxiv.org/abs/2203.06747) and it is partialy based on the [Unsupervised Anomaly detection with One/Class Support Vector Machine](https://github.com/hiram64/ocsvm-anomaly-detection) repository.
 
 #### Dependencies
 Install the TensorFlow 2 via pip: https://www.tensorflow.org/install
